@@ -1,0 +1,34 @@
+{
+  "name": "awos_bienesraices_240836",
+  "version": "1.0.0",
+  "description": "Sistema de Bienes Raices - Proyecto de Clase",
+  "keywords": [
+    "SOA",
+    "MVC",
+    "REST",
+    "Tailwind",
+    "Sequelize",
+    "NodeJS"
+  ],
+  "homepage": "https://github.com/Rodolfo-HH/AWOS_BienesRaices_240836#readme",
+  "bugs": {
+    "url": "https://github.com/Rodolfo-HH/AWOS_BienesRaices_240836/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rodolfo-HH/AWOS_BienesRaices_240836.git"
+  },
+  "license": "ISC",
+  "author": "Rodolfo Hernandez Hernandez",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "server": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
