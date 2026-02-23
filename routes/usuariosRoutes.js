@@ -1,8 +1,10 @@
 import express from "express";
+import { formularioLogin, formularioRegistro } from '../controllers/usuarioController.js';
 
+// Creamos el ruteador
 const router = express.Router();
-
-//definimos las rutas
+router.get("/login", formularioLogin)
+router.get("/registro", formularioRegistro)
 
 // Ejemplo de un ENDPOINT GET
 router.get("/", (req, res) => {
