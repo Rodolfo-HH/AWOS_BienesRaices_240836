@@ -501,3 +501,10 @@ video {
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
+.min-h-screen {
+  min-height: 100vh;
+}
+.bg-gray-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+}
