@@ -11,7 +11,8 @@ const formularioLogin = (req, res) =>{
 
 const formularioRegistro = (req, res) =>{
     res.render('auth/registro',{
-        pagina: 'Crear Cuenta'
+        pagina: 'Crear Cuenta',
+        csrfToken: req.csrfToken()
     })
 }
 
@@ -51,6 +52,7 @@ const registrar = async (req, res) =>{
     if (usuarioExiste){
         return res.render('auth/registro',{
             pagina: 'Crear Cuenta',
+            csrfToken: req.csrfToken(),
             errores: [{msg: 'El usuario ya esta registrado'}],
             usuario: {
                 nombre: req.body.nombre,
@@ -85,8 +87,28 @@ const registrar = async (req, res) =>{
 // Funcion para confirmar la cuenta
 const confirmar = async (req, res) => {
     const { token } = req.params;
-    console.log( token )
-}
+
+    // Verificar si el token es valido
+    const usuario = await Usuario.findOne({ where: {token}})
+
+    if(!usuario) {
+        return res.render('auth/confirmar-cuenta', {
+            pagina: 'Error al Confirmar tu Cuenta',
+            mensaje: 'Hubo un error al confirmar tu cuenta, intente de nuevo',
+            error: true
+        })
+    }
+
+    // Confirmar la cuenta
+    usuario.token = null;
+    usuario.confirmado = true;
+    await usuario.save();
+
+    res.render('auth/confirmar-cuenta', {
+            pagina: 'Cuenta Confirmada',
+            mensaje: 'La cuenta se confirmo Correctamente'
+        })
+    }
 
 const formularioRecuperarPassword = (req, res) =>{
     res.render('auth/recuperacion-password',{

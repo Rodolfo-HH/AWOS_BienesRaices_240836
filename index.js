@@ -1,4 +1,6 @@
 import express from 'express'
+import csurf from 'csurf'
+import cookieParser from 'cookie-parser'
 import usuariosRoutes from "./routes/usuariosRoutes.js"
 import db from './config/db.js'  
 
@@ -7,6 +9,12 @@ const app = express()
 
 // Habilitar lectura de datos de formularios
 app.use( express.urlencoded({extended: true}) )
+
+// Habilitar Cookies Parser
+app.use( cookieParser() )
+
+// Habilitar CSURF
+app.use( csurf({cookie: true}) )
 
 //Conexion a la base de Datos
 try {
