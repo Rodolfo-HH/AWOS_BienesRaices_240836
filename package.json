@@ -27,9 +27,14 @@
     "css": "postcss public/css/tailwind.css -o public/css/app.css --watch"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "csurf": "^1.11.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "express-validator": "^7.3.1",
     "mysql2": "^3.18.1",
+    "nodemailer": "^8.0.1",
     "pug": "^3.0.3",
     "sequelize": "^6.37.7"
   },
