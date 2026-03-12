@@ -19,7 +19,7 @@ El proyecto estará basado en una Arquitectura SOA (Service Oriented Architectur
 |3.| Layouts, Template Engines y Tailwind CSS (Frontend)| ❌ | Terminado |
 |4.| Creación de páginas de Login y Creación de Usuarios| ❌ | Terminado |
 |5.| ORM's y Bases de Datos | ❌ | Terminado |
-|6.| Insertando Registros en la Tabla Usuarios| ❌ | Iniciado |
+|6.| Insertando Registros en la Tabla Usuarios| ❌ | Terminado |
 |7.| Implementación de la Fucnionalidad (Feature) Recuperación de Contraseña (Password Recovery)| ❌ | ❌ |
 |8.| Autentificación de Usuarios (auth)| ❌ | ❌ |
 |9.| Definición de Clase Propiedades (property)| ❌ | ❌ |
