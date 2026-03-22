@@ -1,7 +1,8 @@
 import { check, validationResult } from "express-validator"
+import bcrypt from "bcrypt"
 import Usuario from "../models/Usuario.js"
 import { generarId } from "../helpers/tokens.js"
-import { emailRegistro } from "../helpers/emails.js"
+import { emailRegistro, emailOlvidePassword } from "../helpers/emails.js"
 
 const formularioLogin = (req, res) =>{
     res.render('auth/login',{
@@ -36,6 +37,7 @@ const registrar = async (req, res) =>{
         //Errores
         return res.render('auth/registro',{
             pagina: 'Crear Cuenta',
+            csrfToken: req.csrfToken(),
             errores: resultado.array(),
             usuario: {
                 nombre: req.body.nombre,
@@ -112,8 +114,113 @@ const confirmar = async (req, res) => {
 
 const formularioRecuperarPassword = (req, res) =>{
     res.render('auth/recuperacion-password',{
-        pagina: 'Recuperar Contraseña'
+        pagina: 'Recuperar Contraseña',
+        csrfToken: req.csrfToken(),
     })
+}
+
+const resetPassword = async (req, res) => {
+    
+    //Validacion
+    await check('email').isEmail().withMessage('Verifica tu email').run(req)
+
+    let resultado = validationResult(req)
+
+    // Verificar que el resultado este vacio
+    if (!resultado.isEmpty()) {
+        //Errores
+        return res.render('auth/recuperacion-password',{
+            pagina: 'Recuperar tu Contraseña de tu cuenta',
+            csrfToken: req.csrfToken(),
+            errores: resultado.array()
+        })
+    }
+
+    //Buscar el usuario
+
+    const { email } = req.body
+
+    const usuario = await Usuario.findOne({ where: { email }})
+
+    if(!usuario){
+        return res.render('auth/recuperacion-password',{
+            pagina: 'Recuperar tu Contraseña de tu cuenta',
+            csrfToken: req.csrfToken(),
+            errores: [{msg: 'El Email no Pertenece a ningun usuario'}]
+        })
+    }
+
+    // Generar un Token y enviar el email
+
+    usuario.token = generarId();
+    await usuario.save();
+
+    // Enviar un Email
+    emailOlvidePassword({
+        nombre: usuario.nombre,
+        email: usuario.email,
+        token: usuario.token
+    })
+
+
+    // Renderizar un mensaje
+    res.render('templates/mensaje', {
+        pagina: 'Reestablecer tu Contraseña',
+        mensaje: 'Hemos Enviado un Email con las Instrucciones para Reestablecer tu Contraseña'
+    })
+
+}
+
+const comprobarToken = async (req, res) => {
+    const { token } = req.params;
+    const usuario = await Usuario.findOne({ where: { token }})
+
+    if(!usuario){
+        return res.render('auth/confirmar-cuenta', {
+            pagina: 'Reestablecer tu Contraseña',
+            mensaje: 'Hubo un error al validar tu información, intenta de nuevo',
+            error: true
+        })
+    }
+
+    // Mostrar formulario para modificar el password
+    res.render('auth/reset-password', {
+        pagina: 'Reestablecer tu Contraseña',
+        csrfToken: req.csrfToken()
+    })
+}
+
+const nuevoPassword = async (req, res) => {
+    // Validacion del password
+    await check('password').isLength({ min: 6 }).withMessage('La contraseña debe cumplir los requisitos').run(req)
+
+    let resultado = validationResult(req)
+    if (!resultado.isEmpty()) {
+        return res.render('auth/reset-password', {
+            pagina: 'Reestablecer tu Contraseña',
+            csrfToken: req.csrfToken(),
+            errores: resultado.array(),
+        })
+    }
+
+    const { token } = req.params;
+    const { password } = req.body;
+
+    // Identificar al usuario que hace el cambio
+    const usuario = await Usuario.findOne({ where: { token }})
+
+    // Hash el nuevo password y guardarlo en la base de datos
+
+    const salt = await bcrypt.genSalt(10)
+    usuario.password = await bcrypt.hash(password, salt);
+    usuario.token = null;
+    await usuario.save();
+
+    res.render('auth/confirmar-cuenta', {
+        pagina: 'Contraseña Reestablecida',
+        mensaje: 'La contraseña se guardo Correctamente'
+    })
+
 }
 
 export {
@@ -121,5 +228,8 @@ export {
     formularioRegistro,
     registrar,
     confirmar,
-    formularioRecuperarPassword
+    formularioRecuperarPassword,
+    resetPassword,
+    comprobarToken,
+    nuevoPassword
 }
