@@ -24,7 +24,11 @@ const Usuario = db.define('usuarios', {
             usuario.password = await bcrypt.hash( usuario.password, salt);
         }
     }
+})
+
+// Agregar un método para comparar el password ingresado por el usuario con el hash almacenado en la base de datos
+Usuario.prototype.verificarPassword = function(password) {
+    return bcrypt.compare(password, this.password)
 }
-)
 
 export default Usuario

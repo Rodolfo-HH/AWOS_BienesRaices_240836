@@ -8,7 +8,8 @@ block contenido
 
         .mt-8.mx-auto.max-w-md
             .bg-white.py-8.px-4.shadow
-                form.space-y-5
+                form.space-y-5(method="POST" action="/auth/login")
+                    input(type="hidden" name="_csrf" value=csrfToken)
                     div 
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="email") Email:
                         input#email.w-full.px-3.py-2.border.border-gray-400.rounded-md.placeholder-gray-400(placeholder="Ingresa tu correo" type="email" name="email")
@@ -22,3 +23,20 @@ block contenido
                         a.text-gray-500.text-xs(href="/auth/recuperacion-password") Olvide mi contraseña
 
                     input(class="w-full bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 cursor-pointer" type="submit" value="Iniciar Sesión")
+
+                    // Separador
+                    div.space-y-6.mt-8.text-center
+                        div(class="w-full h-px bg-gray-200")
+                        p.text-gray-500.text-sm.font-medium O continua con
+
+                    // Botones de redes sociales
+                    .space-y-4
+                        // Facebook
+                        a(class="w-full flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-xl transition duration-300 shadow-md hover:shadow-lg group" href="/auth/facebook")
+                            img(class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" src="/img/facebook.svg" alt="Facebook")
+                            span.font-semibold.text-center.flex-1 Continuar con Facebook
+
+                        // Google - EFECTOS MEJORADOS
+                        a(class="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 active:bg-gray-100 border-2 border-gray-300 hover:border-gray-400 hover:shadow-xl active:shadow-lg text-gray-900 p-4 rounded-xl transition-all duration-300 group" href="/auth/google")
+                            img(class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" src="/img/google.svg" alt="Google")
+                            span.font-semibold.text-center.flex-1 Continuar con Google
