@@ -1,11 +1,40 @@
 doctype html
 html(lang="es")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Bienes Raices - 240836 | #{pagina}
-        link(rel="stylesheet", href="/css/app.css")
-    body.min-h-screen.bg-gray-50 
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Bienes Raices - 240836 | #{pagina}
+    link(rel="stylesheet", href="/css/app.css")
 
-        main(class="mx-auto container mt-10 px-2")
-            block contenido
+  body.min-h-screen.bg-gray-50 
+
+    main(class="mx-auto container mt-10 px-2")
+
+      #alertas
+        if errores
+          each error in errores
+            .alerta.error
+              span ⚠️ #{error.msg}
+
+        if mensaje
+          .alerta.success
+            span ✅ #{mensaje}
+
+      block contenido
+
+    script.
+      document.addEventListener("DOMContentLoaded", () => {
+        const alertas = document.querySelectorAll(".alerta");
+
+        alertas.forEach(alerta => {
+          setTimeout(() => {
+            alerta.style.opacity = "0";
+            alerta.style.transform = "translateX(50px)";
+            alerta.style.transition = "all 0.5s ease";
+
+            setTimeout(() => {
+              alerta.remove();
+            }, 500);
+          }, 3000);
+        });
+      });
