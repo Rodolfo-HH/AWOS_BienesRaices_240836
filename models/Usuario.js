@@ -16,7 +16,18 @@ const Usuario = db.define('usuarios', {
         allowNull: false
     },
     token: DataTypes.STRING,
-    confirmado: DataTypes.BOOLEAN
+    confirmado: DataTypes.BOOLEAN,
+
+    // 🔥 NUEVO
+    intentos: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    bloqueado: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    tokenBloqueo: DataTypes.STRING
 },{
     hooks: {
         beforeCreate: async function(usuario) {

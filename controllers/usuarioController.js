@@ -13,15 +13,12 @@ const formularioLogin = (req, res) =>{
 
 const autenticar = async (req, res) => {
 
-    // Validar el formulario
     await check('email').isEmail().withMessage('Verifica tu email').run(req)
     await check('password').notEmpty().withMessage('La contraseña no puede ir vacia').run(req)
 
     let resultado = validationResult(req)
 
-    // Verificar que el resultado este vacio
     if (!resultado.isEmpty()) {
-        //Errores
         return res.render('auth/login',{
             pagina: 'Iniciar Sesión',
             csrfToken: req.csrfToken(),
@@ -31,7 +28,6 @@ const autenticar = async (req, res) => {
 
     const { email, password } = req.body
 
-    // Comprobar que el usuario exista
     const usuario = await Usuario.findOne({ where: { email }})
 
     if(!usuario){
@@ -42,7 +38,13 @@ const autenticar = async (req, res) => {
         })
     }
 
-    // Comprobar que el usuario este confirmado
+    if(usuario.bloqueado){
+        return res.render('auth/login',{
+            pagina: 'Iniciar Sesión',
+            csrfToken: req.csrfToken(),
+            errores: [{msg: 'Cuenta bloqueada. Revisa tu correo'}]
+        })
+    }
 
     if(!usuario.confirmado){
         return res.render('auth/login',{
@@ -52,29 +54,47 @@ const autenticar = async (req, res) => {
         })
     }
 
-    // Comprobar el password
-
     const passwordCorrecto = await usuario.verificarPassword(password);
 
     if(!passwordCorrecto){
+
+        usuario.intentos = (usuario.intentos || 0) + 1;
+
+        if(usuario.intentos >= 5){
+            usuario.bloqueado = true;
+            usuario.tokenBloqueo = generarId();
+
+            await usuario.save();
+
+            console.log(`Desbloquear en: ${process.env.BACKEND_URL}/auth/desbloquear/${usuario.tokenBloqueo}`)
+
+            return res.render('auth/login',{
+                pagina: 'Iniciar Sesión',
+                csrfToken: req.csrfToken(),
+                errores: [{msg: 'Cuenta bloqueada. Revisa tu correo para desbloquear'}]
+            })
+        }
+
+        await usuario.save();
+
         return res.render('auth/login',{
             pagina: 'Iniciar Sesión',
             csrfToken: req.csrfToken(),
-            errores: [{msg: 'La contraseña es incorrecta'}]
+            errores: [{msg: `Contraseña incorrecta (${usuario.intentos}/5)`}]
         })
     }
 
-    // Autenticar al usuario
+    usuario.intentos = 0;
+    await usuario.save();
+
     const token = generarJWT(usuario)
-        
-    // Almacenar el token en una cookie
+
     return res.cookie('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 1000 * 60 * 60 * 24 // 1 dia
-        
-    }).redirect('/mis-propiedades')
+        maxAge: 1000 * 60 * 60 * 24
+    }).redirect('/propiedades')
 }
 
 const formularioRegistro = (req, res) =>{
@@ -86,7 +106,6 @@ const formularioRegistro = (req, res) =>{
 
 const registrar = async (req, res) =>{
 
-    //Validacion
     await check('nombre').notEmpty().withMessage('El nombre no puede ir vacio').run(req)
     await check('email').isEmail().withMessage('Verifica tu email').run(req)
     await check('password').isLength({ min: 6 }).withMessage('La contraseña debe cumplir los requisitos').run(req)
@@ -99,9 +118,7 @@ const registrar = async (req, res) =>{
 
     let resultado = validationResult(req)
 
-    // Verificar que el resultado este vacio
     if (!resultado.isEmpty()) {
-        //Errores
         return res.render('auth/registro',{
             pagina: 'Crear Cuenta',
             csrfToken: req.csrfToken(),
@@ -113,10 +130,8 @@ const registrar = async (req, res) =>{
         })
     }
 
-    //Extraer datos
     const {nombre, email, password} = req.body
 
-    //Verificar que el usuario no este duplicado
     const usuarioExiste = await Usuario.findOne({ where : { email } })
     if (usuarioExiste){
         return res.render('auth/registro',{
@@ -130,7 +145,6 @@ const registrar = async (req, res) =>{
         })
     }
 
-   // Almacanar un usuario
     const usuario = await Usuario.create({
         nombre,
         email,
@@ -138,26 +152,21 @@ const registrar = async (req, res) =>{
         token: generarId()
     })
 
-    // Enviar email de confirmacion
     emailRegistro({
         nombre: usuario.nombre,
         email: usuario.email,
         token: usuario.token
     })
 
-
-   // Mostrar mensaje de confirmacion
    res.render('templates/mensaje', {
     pagina: 'Cuenta Creada Correctamente',
     mensaje: 'Hemos Enviado un Email de Confirmacion, presiona en el enlace'
    })
 }
 
-// Funcion para confirmar la cuenta
 const confirmar = async (req, res) => {
     const { token } = req.params;
 
-    // Verificar si el token es valido
     const usuario = await Usuario.findOne({ where: {token}})
 
     if(!usuario) {
@@ -168,16 +177,15 @@ const confirmar = async (req, res) => {
         })
     }
 
-    // Confirmar la cuenta
     usuario.token = null;
     usuario.confirmado = true;
     await usuario.save();
 
     res.render('auth/confirmar-cuenta', {
-            pagina: 'Cuenta Confirmada',
-            mensaje: 'La cuenta se confirmo Correctamente'
-        })
-    }
+        pagina: 'Cuenta Confirmada',
+        mensaje: 'La cuenta se confirmo Correctamente'
+    })
+}
 
 const formularioRecuperarPassword = (req, res) =>{
     res.render('auth/recuperacion-password',{
@@ -188,22 +196,17 @@ const formularioRecuperarPassword = (req, res) =>{
 
 const resetPassword = async (req, res) => {
     
-    //Validacion
     await check('email').isEmail().withMessage('Verifica tu email').run(req)
 
     let resultado = validationResult(req)
 
-    // Verificar que el resultado este vacio
     if (!resultado.isEmpty()) {
-        //Errores
         return res.render('auth/recuperacion-password',{
             pagina: 'Recuperar tu Contraseña de tu cuenta',
             csrfToken: req.csrfToken(),
             errores: resultado.array()
         })
     }
-
-    //Buscar el usuario
 
     const { email } = req.body
 
@@ -217,40 +220,53 @@ const resetPassword = async (req, res) => {
         })
     }
 
-    // Generar un Token y enviar el email
+    // 🔒 VALIDACIÓN AGREGADA
+    if(!usuario.confirmado){
+        return res.render('auth/recuperacion-password',{
+            pagina: 'Recuperar tu Contraseña de tu cuenta',
+            csrfToken: req.csrfToken(),
+            errores: [{msg: 'Debes confirmar tu cuenta primero'}]
+        })
+    }
 
     usuario.token = generarId();
     await usuario.save();
 
-    // Enviar un Email
     emailOlvidePassword({
         nombre: usuario.nombre,
         email: usuario.email,
         token: usuario.token
     })
 
-
-    // Renderizar un mensaje
     res.render('templates/mensaje', {
         pagina: 'Reestablecer tu Contraseña',
         mensaje: 'Hemos Enviado un Email con las Instrucciones para Reestablecer tu Contraseña'
     })
-
 }
 
 const comprobarToken = async (req, res) => {
     const { token } = req.params;
     const usuario = await Usuario.findOne({ where: { token }})
 
+   // ❌ TOKEN INVALIDO
     if(!usuario){
         return res.render('auth/confirmar-cuenta', {
-            pagina: 'Reestablecer tu Contraseña',
-            mensaje: 'Hubo un error al validar tu información, intenta de nuevo',
+            pagina: 'Error al validar token',
+            mensaje: 'El enlace es inválido o ha expirado',
             error: true
         })
     }
 
-    // Mostrar formulario para modificar el password
+    // 🔒 VALIDAR QUE ESTÉ CONFIRMADO
+    if(!usuario.confirmado){
+        return res.render('auth/confirmar-cuenta', {
+            pagina: 'Cuenta no confirmada',
+            mensaje: 'Debes confirmar tu cuenta antes de cambiar la contraseña',
+            error: true
+        })
+    }
+
+    // ✅ TODO OK → mostrar formulario
     res.render('auth/reset-password', {
         pagina: 'Reestablecer tu Contraseña',
         csrfToken: req.csrfToken()
@@ -258,7 +274,6 @@ const comprobarToken = async (req, res) => {
 }
 
 const nuevoPassword = async (req, res) => {
-    // Validacion del password
     await check('password').isLength({ min: 6 }).withMessage('La contraseña debe cumplir los requisitos').run(req)
 
     let resultado = validationResult(req)
@@ -273,10 +288,24 @@ const nuevoPassword = async (req, res) => {
     const { token } = req.params;
     const { password } = req.body;
 
-    // Identificar al usuario que hace el cambio
     const usuario = await Usuario.findOne({ where: { token }})
 
-    // Hash el nuevo password y guardarlo en la base de datos
+    if(!usuario){
+        return res.render('auth/confirmar-cuenta', {
+            pagina: 'Error',
+            mensaje: 'Token no válido o expirado',
+            error: true
+        })
+    }
+
+    // 🔒 VALIDACIÓN AGREGADA
+    if(!usuario.confirmado){
+        return res.render('auth/confirmar-cuenta', {
+            pagina: 'Error',
+            mensaje: 'Debes confirmar tu cuenta primero',
+            error: true
+        })
+    }
 
     const salt = await bcrypt.genSalt(10)
     usuario.password = await bcrypt.hash(password, salt);
@@ -287,7 +316,6 @@ const nuevoPassword = async (req, res) => {
         pagina: 'Contraseña Reestablecida',
         mensaje: 'La contraseña se guardo Correctamente'
     })
-
 }
 
 export {
