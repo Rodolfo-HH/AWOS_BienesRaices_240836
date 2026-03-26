@@ -28,9 +28,6 @@ Se implementó el envío de correos electrónicos para:
 •	Confirmación de cuenta 
 •	Recuperación de contraseña
 
-<img src="/public/img/Estilizacion de correos.png" width="600">
-<img src="/public/img/Estilizacion de correos 1.png" width="600">
-
 Los correos incluyen:
 •	Nombre del usuario 
 •	Enlaces con tokens únicos 
@@ -59,7 +56,7 @@ El sistema implementa un mecanismo de seguridad:
 
 # Pruebas del Sistema
 
-## 🔹 Test 1: Interacción Rotativa
+## 🔹 Test: Interacción Rotativa
 Se probó el flujo completo:
 •	Registro 
 •	Login 
@@ -69,44 +66,52 @@ Se probó el flujo completo:
 <img src="/public/img/Iniciar Sesion.png" width="600">
 <img src="/public/img/Recuperar Contraseña.png" width="600">
 
-## 🔹 Test 2: Registro Exitoso
+## 🔹 Test: Registro Exitoso
 •	Usuario registrado correctamente 
 •	Se genera token 
 •	Se envía correo de confirmación
 
 <img src="/public/img/LoginRegistro.png" width="600">
 <img src="/public/img/registroExitoso.png" width="600">
+<img src="/public/img/Estilizacion de correos 1.png" width="600">
+<img src="/public/img/DB01.png" width="600">
 
-## 🔹 Test 3: Registro Fallido por Formulario
+## 🔹 Test: Registro Fallido por Formulario
 •	Campos vacíos o inválido
 
 <img src="/public/img/Error Formulario Registro.png" width="600">
 
-## 🔹 Test 4: Registro Fallido por Correo Duplicado
+## 🔹 Test: Registro Fallido por Correo Duplicado
 •	Se detecta duplicidad en base de datos
 
 <img src="/public/img/Error Usuario Duplicado.png" width="600">
 
-## 🔹 Test 5: Cambio de Contraseña Exitoso
+## 🔹 Test: Cambio de Contraseña Exitoso
 •	Usuario validado cambia contraseña
- 
-<img src="/public/img/Nueva Contraseña.png" width="600">
 
-## 🔹 Test 6: Cambio Fallido (Usuario no validado)
+<img src="/public/img/DBPassOld.png" width="600">
+<img src="/public/img/For.png" width="600">
+<img src="/public/img/CorreoPass.png" width="600">
+<img src="/public/img/ForRess.png" width="600">
+<img src="/public/img/Nueva Contraseña.png" width="600">
+<img src="/public/img/DBPassNew.png" width="600">
+
+## 🔹 Test: Cambio Fallido (Usuario no validado)
 •	Usuario no confirmado intenta cambiar contraseña
 
 <img src="/public/img/usuarionoconfirmado.png" width="600">
 
-## 🔹 Test 7: Login Exitoso
+## 🔹 Test: Login Exitoso
 •	Usuario inicia sesión correctamente
 
 <img src="/public/img/Inicio de sesion exitoso.png" width="600">
 <img src="/public/img/Pantalla de Propiedades.png" width="600">
 
-## 🔹 Test 8: Bloqueo de Cuenta
+## 🔹 Test: Bloqueo de Cuenta
 •	Después de 5 intentos fallidos
 
 <img src="/public/img/Cuenta bloqueada.png" width="600">
+<img src="/public/img/DB01.png" width="600">
 
 ## Seguridad Implementada
 •	Encriptación de contraseñas con bcrypt 
