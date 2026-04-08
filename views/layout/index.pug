@@ -5,6 +5,9 @@ html(lang="es")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title Bienes Raices - 240836 | #{pagina}
     link(rel="stylesheet", href="/css/app.css")
+    block styles
+      link(rel="stylesheet", href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css")
+      link(rel="stylesheet", href="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.css")
 
   body.min-h-screen.bg-gray-50 
     if barra
@@ -52,3 +55,5 @@ html(lang="es")
           }, 4000);
         });
       });
+
+    block scripts 
