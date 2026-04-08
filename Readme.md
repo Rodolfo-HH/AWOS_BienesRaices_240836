@@ -22,8 +22,8 @@ El proyecto estará basado en una Arquitectura SOA (Service Oriented Architectur
 |6.| Insertando Registros en la Tabla Usuarios| 20 | Terminado |
 |7.| Implementación de la Fucnionalidad (Feature) Recuperación de Contraseña (Password Recovery)| 10 | Terminado |
 |8.| Autentificación de Usuarios (auth)| 15 | Terminado |
-|9.| Definición de Clase Propiedades (property)| ❌ | ❌ |
-|10.| Operaciones CRUD (Create, Read, Update, Delete) de las Propuedades | ❌ | ❌ |
+|9.| Definición de Clase Propiedades (property)| ❌ | Terminado |
+|10.| Operaciones CRUD (Create, Read, Update, Delete) de las Propiedades | ❌ | Terminado |
 |11.| Proteción de Rutas y Validación de Tokes de Sesión (JWT) | ❌ | ❌ |
 |12.| Añadir Imágenes a la Propiedad (Gestión de Archivos) | ❌ | ❌ |
 |13.| Elaboración Panel de Administración (Dashboard)| ❌ | ❌ |
