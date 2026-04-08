@@ -24,7 +24,7 @@ El proyecto estará basado en una Arquitectura SOA (Service Oriented Architectur
 |8.| Autentificación de Usuarios (auth)| 15 | Terminado |
 |9.| Definición de Clase Propiedades (property)| ❌ | Terminado |
 |10.| Operaciones CRUD (Create, Read, Update, Delete) de las Propiedades | ❌ | Terminado |
-|11.| Proteción de Rutas y Validación de Tokes de Sesión (JWT) | ❌ | ❌ |
+|11.| Proteción de Rutas y Validación de Tokes de Sesión (JWT) | ❌ | Inicaiado |
 |12.| Añadir Imágenes a la Propiedad (Gestión de Archivos) | ❌ | ❌ |
 |13.| Elaboración Panel de Administración (Dashboard)| ❌ | ❌ |
 |14.| Formulario de Edición de Propiedades | ❌ | ❌ |
