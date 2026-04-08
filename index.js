@@ -1,27 +1,41 @@
 import express from 'express'
 import csurf from 'csurf'
+import session from "express-session";
+import passport from "passport";
+import "./config/passport.js";
 import cookieParser from 'cookie-parser'
 import usuariosRoutes from "./routes/usuariosRoutes.js"
 import propiedadesRoutes from "./routes/propiedadesRoutes.js"
 import db from './config/db.js'  
 
-// Craear la app
+// Crear la app
 const app = express()
 
 // Habilitar lectura de datos de formularios
-app.use( express.urlencoded({extended: true}) )
+app.use(express.urlencoded({ extended: true }))
 
 // Habilitar Cookies Parser
-app.use( cookieParser() )
+app.use(cookieParser())
 
-// Habilitar CSURF
-app.use( csurf({cookie: true}) )
+// 🔥 SESIONES (ANTES DE PASSPORT)
+app.use(session({
+    secret: "RimuruTempest240836",
+    resave: false,
+    saveUninitialized: false
+}));
 
-//Conexion a la base de Datos
+// 🔥 PASSPORT (DESPUÉS DE SESSION)
+app.use(passport.initialize());
+app.use(passport.session());
+
+// 🔥 CSURF (DESPUÉS DE COOKIE Y SESSION)
+app.use(csurf({ cookie: true }))
+
+// Conexion a la base de Datos
 try {
     await db.authenticate();
     console.log('Conexion Correcta a la Base de Datos')
-    await db.sync(); // CREA LAS TABLAS SI NO EXISTEN
+    await db.sync();
 } catch (error) {
     console.log(error)
 }
@@ -33,7 +47,7 @@ app.set('views', './views')
 // Carpeta publica
 app.use(express.static('public'))
 
-// Importamos sus rutas (ruteo)
+// 🔥 RUTAS (AL FINAL)
 app.use("/auth", usuariosRoutes)
 app.use("/", propiedadesRoutes)
 

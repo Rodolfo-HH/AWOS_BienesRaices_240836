@@ -13,7 +13,7 @@ const Usuario = db.define('usuarios', {
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     token: DataTypes.STRING,
     confirmado: DataTypes.BOOLEAN,
@@ -30,9 +30,11 @@ const Usuario = db.define('usuarios', {
     tokenBloqueo: DataTypes.STRING
 },{
     hooks: {
-        beforeCreate: async function(usuario) {
-            const salt = await bcrypt.genSalt(10)
-            usuario.password = await bcrypt.hash( usuario.password, salt);
+        beforeUpdate: async (usuario) => {
+            if (usuario.changed('password')) {
+                const salt = await bcrypt.genSalt(10);
+                usuario.password = await bcrypt.hash(usuario.password, salt);
+            }
         }
     }
 })

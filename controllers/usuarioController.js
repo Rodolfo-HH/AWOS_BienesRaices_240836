@@ -94,7 +94,7 @@ const autenticar = async (req, res) => {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge: 1000 * 60 * 60 * 24
-    }).redirect('/propiedades')
+    }).redirect('/mis-propiedades')
 }
 
 const formularioRegistro = (req, res) =>{
@@ -318,6 +318,46 @@ const nuevoPassword = async (req, res) => {
     })
 }
 
+// ===== GOOGLE: CREAR PASSWORD =====
+
+const formularioCrearPassword = (req, res) => {
+    res.render('auth/crear-password', {
+        pagina: 'Crea tu contraseña',
+        csrfToken: req.csrfToken()
+    });
+}
+
+const guardarPassword = async (req, res) => {
+    const { password, repetir_password } = req.body;
+
+    // Validaciones
+    if (password.length < 6) {
+        return res.render('auth/crear-password', {
+            pagina: 'Crea tu contraseña',
+            csrfToken: req.csrfToken(),
+            errores: [{ msg: 'La contraseña debe tener al menos 6 caracteres' }]
+        });
+    }
+
+    if (password !== repetir_password) {
+        return res.render('auth/crear-password', {
+            pagina: 'Crea tu contraseña',
+            csrfToken: req.csrfToken(),
+            errores: [{ msg: 'Las contraseñas no coinciden' }]
+        });
+    }
+
+    const usuario = await Usuario.findByPk(req.user.id);
+
+    // Encriptar password
+    const salt = await bcrypt.genSalt(10);
+    usuario.password = await bcrypt.hash(password, salt);
+
+    await usuario.save();
+
+    res.redirect('/mis-propiedades');
+}
+
 export {
     formularioLogin,
     autenticar,
@@ -327,5 +367,7 @@ export {
     formularioRecuperarPassword,
     resetPassword,
     comprobarToken,
-    nuevoPassword
+    nuevoPassword,
+    formularioCrearPassword,
+    guardarPassword
 }
