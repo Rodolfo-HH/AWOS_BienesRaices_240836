@@ -1,5 +1,3 @@
-import { document } from "postcss";
-
 (function() {
     const lat = document.querySelector('#lat').value || 20.2766;
     const lng = document.querySelector('#lng').value || -97.9619;
