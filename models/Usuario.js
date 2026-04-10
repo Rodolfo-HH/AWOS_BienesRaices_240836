@@ -30,11 +30,23 @@ const Usuario = db.define('usuarios', {
     tokenBloqueo: DataTypes.STRING
 },{
     hooks: {
+        beforeCreate: async (usuario) => {
+            if (usuario.password) {
+                const salt = await bcrypt.genSalt(10);
+                usuario.password = await bcrypt.hash(usuario.password, salt);
+            }
+        },
         beforeUpdate: async (usuario) => {
             if (usuario.changed('password')) {
                 const salt = await bcrypt.genSalt(10);
                 usuario.password = await bcrypt.hash(usuario.password, salt);
             }
+        }
+    },
+    scopes: {
+        // Excluir campos sensibles por defecto
+        eliminarPassword: {
+            exclude: ['password', 'token', 'confirmado', 'intentos', 'bloqueado', 'tokenBloqueo', 'createdAt', 'updatedAt']
         }
     }
 })
