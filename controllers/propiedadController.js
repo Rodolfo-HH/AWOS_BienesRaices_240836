@@ -4,7 +4,6 @@ import { Categoria, Precio, Propiedad } from "../models/index.js";
 const admin = (req, res) => {
     res.render('propiedades/admin', {
         pagina: 'Bienvenido al Sistema de Bienes Raices',
-        barra: true
     });
 }
 
@@ -18,7 +17,6 @@ const crear = async (req, res) => {
 
     res.render('propiedades/crear', {
         pagina: 'Crear Propiedad',
-        barra: true,
         csrfToken: req.csrfToken(),
         categorias,
         precios,
@@ -39,7 +37,6 @@ const guardar = async (req, res) => {
 
         return res.render('propiedades/crear', {
             pagina: 'Crear Propiedad',
-            barra: true,
             csrfToken: req.csrfToken(),
             categorias,
             precios,
@@ -79,8 +76,73 @@ const guardar = async (req, res) => {
         }
 }
 
+const agregarImagen = async (req, res) => {
+
+    const { id } = req.params;
+
+    // Validar que la propiedad exista y que el usuario sea el propietario
+
+    const propiedad = await Propiedad.findByPk(id);
+    if (!propiedad) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    // Validar que la propiedad no este publicada
+
+    if (propiedad.publicado) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    // Validar que la propiedad pertenezca a quien visita la página
+
+    if(req.usuario.id.toString() !== propiedad.usuarioId.toString()) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    res.render('propiedades/agregar-imagen', {
+        pagina: `Agregar Imagen: ${propiedad.titulo}`,
+        csrfToken: req.csrfToken(),
+        propiedad
+    })
+}
+
+const almacenarImagen = async (req, res) => {
+    const { id } = req.params;
+
+    // Validar que la propiedad exista
+    const propiedad = await Propiedad.findByPk(id);
+    if (!propiedad) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    // Validar que la propiedad no este publicada
+
+    if (propiedad.publicado) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    // Validar que la propiedad pertenezca a quien visita la página
+
+    if(req.usuario.id.toString() !== propiedad.usuarioId.toString()) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    try {
+        propiedad.imagen = req.file.filename;
+        propiedad.publicado = 1;
+        await propiedad.save();
+
+        res.redirect('/mis-propiedades');
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export {
     admin,
     crear,
-    guardar
+    guardar,
+    agregarImagen,
+    almacenarImagen
 };
