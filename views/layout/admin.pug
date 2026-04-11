@@ -6,27 +6,30 @@ html(lang="es")
     title Bienes Raices - 240836 | #{pagina}
     link(rel="stylesheet", href="/css/app.css")
     block styles
-      link(rel="stylesheet", href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css ")
-      link(rel="stylesheet", href="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.css ")
+      link(rel="stylesheet", href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css")
+      link(rel="stylesheet", href="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.css")
 
-  body.min-h-screen.bg-gray-50 
+  body.min-h-screen.bg-gray-50  
+
+    include includes/header-admin
 
     main.mx-auto.container.mt-10.px-2
 
-      #alertas.space-y-3.flex.flex-col.items-center
+      #alertas.space-y-3
         if errores
           each error in errores
-            .alerta.error.w-full.max-w-md.flex.items-center.gap-3.p-4.rounded-lg.shadow-md.bg-red-100.border.border-red-400.text-red-700
+            .alerta.error.flex.items-center.gap-3.p-4.rounded-lg.shadow-md.bg-red-100.border.border-red-400.text-red-700
               span.text-xl ⚠️
               p.font-semibold #{error.msg}
 
         if mensaje
-          .alerta.success.w-full.max-w-md.flex.items-center.gap-3.p-4.rounded-lg.shadow-md.bg-green-100.border.border-green-400.text-green-700
+          .alerta.success.flex.items-center.gap-3.p-4.rounded-lg.shadow-md.bg-green-100.border.border-green-400.text-green-700
             span.text-xl ✅
             p.font-semibold #{mensaje}
 
       block contenido
 
+    // 👇 AQUÍ VA EL SCRIPT
     script.
       document.addEventListener("DOMContentLoaded", () => {
         const alertas = document.querySelectorAll(".alerta");
@@ -53,4 +56,4 @@ html(lang="es")
         });
       });
 
-    block scripts
+    block scripts 
