@@ -41,7 +41,7 @@ router.get('/google/callback',
             return res.redirect('/auth/crear-password');
         }
 
-        res.redirect('/propiedades');
+        res.redirect('/mis-propiedades');
     }
 );
 

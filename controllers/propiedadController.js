@@ -1,10 +1,30 @@
 import { validationResult } from "express-validator";
 import { Categoria, Precio, Propiedad } from "../models/index.js";
 
-const admin = (req, res) => {
-    res.render('propiedades/admin', {
-        pagina: 'Bienvenido al Sistema de Bienes Raices',
-    });
+const admin = async (req, res) => { 
+    try {
+        const { id } = req.usuario;
+
+        const propiedades = await Propiedad.findAll({
+            where: {
+                usuarioId: id
+            },
+            include: [
+                { model: Categoria, as: 'categoria' },
+                { model: Precio, as: 'precio' }
+            ]
+        });
+
+        console.log('Propiedades encontradas:', propiedades.length);
+
+        res.render('propiedades/admin', {
+            pagina: 'Bienvenido al Sistema de Bienes Raices',
+            propiedades
+        });
+    } catch (error) {
+        console.error(error);
+        res.redirect('/mis-propiedades');
+    }
 }
 
 // Formulario para crear una nueva propiedad
