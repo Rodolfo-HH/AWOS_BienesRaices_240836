@@ -26,7 +26,7 @@ El proyecto estará basado en una Arquitectura SOA (Service Oriented Architectur
 |10.| Operaciones CRUD (Create, Read, Update, Delete) de las Propiedades | ❌ | Terminado |
 |11.| Proteción de Rutas y Validación de Tokes de Sesión (JWT) | ❌ | Terminado |
 |12.| Añadir Imágenes a la Propiedad (Gestión de Archivos) | ❌ | Terminado |
-|13.| Elaboración Panel de Administración (Dashboard)| ❌ | Iniciado |
+|13.| Elaboración Panel de Administración (Dashboard)| ❌ | Terminado |
 |14.| Formulario de Edición de Propiedades | ❌ | ❌ |
 |15.| Formulario de Eliminación de Propiedades | ❌ | ❌ |
 |16.| Página de Consulta de la Propiedad | ❌ | ❌ |
