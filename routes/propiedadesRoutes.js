@@ -1,6 +1,6 @@
 import express from 'express';
 import { body } from 'express-validator';
-import { admin, crear, guardar, agregarImagen, almacenarImagen } from '../controllers/propiedadController.js';
+import { admin, crear, guardar, agregarImagen, almacenarImagen, editar, guardarCambios } from '../controllers/propiedadController.js';
 import protegerRuta from '../middleware/protegerRuta.js';
 import upload from '../middleware/subirImagen.js';
 
@@ -28,6 +28,24 @@ router.get('/propiedades/agregar-imagen/:id',protegerRuta, agregarImagen);
 router.post('/propiedades/agregar-imagen/:id', protegerRuta,
     upload.single('imagen'),
     almacenarImagen
+)
+
+router.get('/propiedades/editar/:id',protegerRuta, editar, (req, res) => {
+    res.send('Editar propiedad');
+})
+
+router.post('/propiedades/editar/:id', protegerRuta,
+    body('titulo').notEmpty().withMessage('El título es obligatorio'),
+    body('descripcion')
+        .notEmpty().withMessage('La descripción no puede estar vacía')
+        .isLength({ min: 20 }).withMessage('La descripción debe tener al menos 20 caracteres'),
+    body('categoria').notEmpty().withMessage('La categoría es obligatoria'),
+    body('precio').notEmpty().withMessage('El precio es obligatorio'),
+    body('habitaciones').notEmpty().withMessage('El número de habitaciones es obligatorio'),
+    body('estacionamientos').notEmpty().withMessage('El número de estacionamientos es obligatorio'),
+    body('wc').notEmpty().withMessage('El número de baños es obligatorio'),
+    body('lat').notEmpty().withMessage('Ubica la propiedad en el mapa').bail(),
+    guardarCambios
 )
 
 export default router;
