@@ -28,7 +28,7 @@ El proyecto estará basado en una Arquitectura SOA (Service Oriented Architectur
 |12.| Añadir Imágenes a la Propiedad (Gestión de Archivos) | ❌ | Terminado |
 |13.| Elaboración Panel de Administración (Dashboard)| ❌ | Terminado |
 |14.| Formulario de Edición de Propiedades | ❌ | Terminado |
-|15.| Formulario de Eliminación de Propiedades | ❌ | Iniciado |
+|15.| Formulario de Eliminación de Propiedades | ❌ | Terminado |
 |16.| Página de Consulta de la Propiedad | ❌ | ❌ |
 |17.| Implementación del Paginador | ❌ | ❌ |
 |18.| Creando la Página Inicial (index)| ❌ | ❌ |
