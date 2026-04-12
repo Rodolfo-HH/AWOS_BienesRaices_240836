@@ -27,7 +27,7 @@ El proyecto estará basado en una Arquitectura SOA (Service Oriented Architectur
 |11.| Proteción de Rutas y Validación de Tokes de Sesión (JWT) | ❌ | Terminado |
 |12.| Añadir Imágenes a la Propiedad (Gestión de Archivos) | ❌ | Terminado |
 |13.| Elaboración Panel de Administración (Dashboard)| ❌ | Terminado |
-|14.| Formulario de Edición de Propiedades | ❌ | Iniciado |
+|14.| Formulario de Edición de Propiedades | ❌ | Terminado |
 |15.| Formulario de Eliminación de Propiedades | ❌ | ❌ |
 |16.| Página de Consulta de la Propiedad | ❌ | ❌ |
 |17.| Implementación del Paginador | ❌ | ❌ |
